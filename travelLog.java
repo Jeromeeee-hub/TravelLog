@@ -3,12 +3,14 @@ import java.util.Scanner;
 public class travelLog {
 
     static Scanner s = new Scanner(System.in);
+    static TravelLogObject[] log = new TravelLogObject[50];
     static String fName;
     static String uName;
     static String email;
     static String number;
     static String pass;
     static String confirmPass;
+    static int logCount = 0;
 
     public static void main(String[] args) {
         System.out.println("Travel Log");
@@ -188,7 +190,7 @@ public class travelLog {
     }
 
     static void menu() {
-        int userInput;
+        String userInput;
         do {
             System.out.println(
                 "=================================================="
@@ -218,22 +220,148 @@ public class travelLog {
                     "[15] Exit\n"
             );
             System.out.print("Enter Choice: ");
-            userInput = s.nextInt();
-            if (userInput < 1 || userInput > 15) System.out.println(
+            userInput = s.nextLine();
+            if (!userInput.matches("^(?:[1-9]|1[0-5])$")) System.out.println(
                 "Invalid Input, Please Choose Among The Choices Only."
             );
-            System.out.println();
-            switch (userInput) {
-                case 1:
-                    addTravelLog();
-                    break;
-                default:
-                    break;
-            }
-        } while (userInput != 15);
+            else menuFunction(userInput);
+        } while (!userInput.matches("^(?:[1-9]|1[0-5])$"));
+    }
+
+    static void menuFunction(String x) {
+        switch (x) {
+            case "1":
+                addTravelLog();
+                break;
+            default:
+                break;
+        }
     }
 
     static void addTravelLog() {
-        System.out.println("Add Travel Log");
+        String destiName;
+        String destiType;
+        String numOfVisits;
+        String firstDateVisited;
+        String location;
+        String travelexp;
+        boolean duplicate = false;
+
+        System.out.println("[1] Add Travel Log Menu");
+        do {
+            duplicate = false;
+            System.out.println(
+                "Destination Name Must Contain 3-50 Characters, And Must Be Unique, No Duplicates Allowed\nExample: Kapehan Sa Baguio"
+            );
+            System.out.print("Enter Destination Name: ");
+            destiName = s.nextLine();
+            System.out.println();
+            for (int i = 0; i < logCount; i++) {
+                if (destiName.equals(log[i].destinationName)) {
+                    System.out.println(
+                        "Destination Name \"" +
+                            destiName +
+                            "\" Is Already Stored In Travel Log, Please Use Another Name."
+                    );
+                    System.out.println();
+                    duplicate = true;
+                }
+            }
+            if (
+                destiName.length() < 3 || destiName.length() > 50
+            ) System.out.println(
+                "Invalid Input, Please Try Again. Follow The Instructions Below\n"
+            );
+        } while (
+            destiName.length() < 3 ||
+            destiName.length() > 50 ||
+            duplicate == true
+        );
+
+        do {
+            System.out.println(
+                "Destination Type\nb = Beach, m = Mountain, c = city, h = Historical Site, o = Other.\n(Case Sensitive)"
+            );
+            System.out.print(
+                "Enter Destination Type Of " + destiName + " Trip: "
+            );
+            destiType = s.nextLine();
+            System.out.println();
+            if (!destiType.matches("[bmcho]")) System.out.println(
+                "Invalid Input, Please Try Again. Follow The Instructions Below\n"
+            );
+        } while (!destiType.matches("[bmcho]"));
+
+        do {
+            System.out.println("Number Of Visits Must Not Be Less Than 1");
+            System.out.print(
+                "Enter Number Of Visits in " + destiName + " Trip: "
+            );
+            numOfVisits = s.nextLine();
+            System.out.println();
+            if (
+                numOfVisits.length() < 1 || numOfVisits.matches(".*[0-9].*")
+            ) System.out.println(
+                "Invalid Input, Please Try Again. Follow The Instructions Below\n"
+            );
+        } while (numOfVisits.length() < 1 || !numOfVisits.matches(".*[1-9].*"));
+
+        do {
+            System.out.println(
+                "Date First Visited Must Follow The Format \"mm/dd/yyyy\", And Must Contain Exactly 8 Numbers And 2 / Characters"
+            );
+            System.out.print(
+                "Enter First Date Visited Of The Trip " + destiName + ": "
+            );
+            firstDateVisited = s.nextLine();
+            System.out.println();
+            if (
+                firstDateVisited.length() < 10 ||
+                firstDateVisited.length() > 10 ||
+                !firstDateVisited.matches("\\d{2}/\\d{2}/\\d{4}")
+            ) System.out.println(
+                "Invalid Input, Please Try Again. Follow The Instructions Below\n"
+            );
+        } while (
+            firstDateVisited.length() < 10 ||
+            firstDateVisited.length() > 10 ||
+            !firstDateVisited.matches("\\d{2}/\\d{2}/\\d{4}")
+        );
+        do {
+            System.out.println(
+                "Location Name Must Not Exceed 30 Characters, Specific Location Of Destination\nExample: Baguio"
+            );
+            System.out.print("Enter Location: ");
+            location = s.nextLine();
+            System.out.println();
+            if (
+                location.length() > 30 || location.isBlank()
+            ) System.out.println(
+                "Invalid Input, Please Try Again. Follow The Instructions Below\n"
+            );
+        } while (location.length() > 30 || location.isBlank());
+
+        do {
+            System.out.println(
+                "Travel Experience Contains The User's Overall Experience, Impression, Notes About The Destination.\nMust Not Be Empty And Must Not Exceed 300 Characters."
+            );
+            travelexp = s.nextLine();
+            System.out.println();
+            if (
+                travelexp.length() > 300 || travelexp.isBlank()
+            ) System.out.println(
+                "Invalid Input, Please Try Again. Follow The Instructions Below\n"
+            );
+        } while (travelexp.length() > 300 || travelexp.isBlank());
+        log[logCount] = new TravelLogObject(
+            destiName,
+            destiType,
+            numOfVisits,
+            firstDateVisited,
+            location,
+            travelexp
+        );
+        logCount++;
+        menu();
     }
 }
