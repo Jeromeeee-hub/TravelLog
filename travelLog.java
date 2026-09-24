@@ -4,15 +4,16 @@ public class travelLog {
 
     static Scanner s = new Scanner(System.in);
     static TravelLogObject[] log = new TravelLogObject[50];
-    static String fName;
-    static String uName;
-    static String email;
-    static String number;
-    static String pass;
-    static String confirmPass;
+    static User p;
     static int logCount = 0;
 
     public static void main(String[] args) {
+        String fName;
+        String uName;
+        String email;
+        String number;
+        String pass;
+        String confirmPass;
         System.out.println("Travel Log");
         System.out.println("[1] Sign Up \n[2] Sign In");
         int userInput = s.nextInt();
@@ -39,7 +40,7 @@ public class travelLog {
                         "Invalid Input, Please Try Again. Follow The Instructions Below\n"
                     );
                 } while (
-                    isinValidLength(fName, 5, 80)||
+                    isinValidLength(fName, 5, 80) ||
                     fName.isBlank() ||
                     fName.matches(".*[0-9].*")
                 );
@@ -52,14 +53,14 @@ public class travelLog {
                     uName = s.nextLine();
                     System.out.println();
                     if (
-                        isinValidLength(uName, 8, 50)||
+                        isinValidLength(uName, 8, 50) ||
                         !uName.matches("^[a-zA-Z0-9]+$") ||
                         uName.isBlank()
                     ) System.out.println(
                         "Invalid Input, Please Try Again. Follow The Instructions Below\n"
                     );
                 } while (
-                    isinValidLength(uName, 8, 50)||
+                    isinValidLength(uName, 8, 50) ||
                     !uName.matches("^[a-zA-Z0-9]+$") ||
                     uName.isBlank()
                 );
@@ -73,14 +74,14 @@ public class travelLog {
                     System.out.println();
                     if (
                         !email.contains("@gmail.com") ||
-                        isinValidLength(email, 1, 30)||
+                        isinValidLength(email, 1, 30) ||
                         email.isBlank()
                     ) System.out.println(
                         "Invalid Input, Please Try Again. Follow The Instructions Below\n"
                     );
                 } while (
                     !email.contains("@gmail.com") ||
-                    isinValidLength(email, 1, 30)||
+                    isinValidLength(email, 1, 30) ||
                     email.isBlank()
                 );
 
@@ -117,7 +118,7 @@ public class travelLog {
                         confirmPass = s.nextLine();
                     } while (!pass.equals(confirmPass));
                     if (
-                        isinValidLength(pass, 8, 20)||
+                        isinValidLength(pass, 8, 20) ||
                         !pass.matches("^[a-zA-Z0-9!@#$%&*.]+$") ||
                         !pass.matches(".*[A-Z].*") ||
                         !pass.matches(".*[0-9].*") ||
@@ -128,7 +129,7 @@ public class travelLog {
                         "Invalid Input, Please Try Again. Follow The Instructions Below\n"
                     );
                 } while (
-                    isinValidLength(pass, 8, 20)||
+                    isinValidLength(pass, 8, 20) ||
                     !pass.matches("^[a-zA-Z0-9!@#$%&*.]+$") ||
                     !pass.matches(".*[A-Z].*") ||
                     !pass.matches(".*[0-9].*") ||
@@ -136,7 +137,7 @@ public class travelLog {
                     !pass.matches(".*[!@#$%&*.].*") ||
                     pass.isBlank()
                 );
-                User p = new User(fName, uName, email, number, pass);
+                p = new User(fName, uName, email, number, pass);
                 System.out.println();
                 System.out.println(
                     "Account Created Succesfuly, Now Proceeding To Log In"
@@ -152,13 +153,17 @@ public class travelLog {
                     String loginUser = s.nextLine();
                     System.out.print("Enter Password: ");
                     String loginPass = s.nextLine();
-                    if (loginUser.equals(uName) && loginPass.equals(pass)) {
+                    if (
+                        loginUser.equals(p.userName) &&
+                        loginPass.equals(p.passW)
+                    ) {
                         System.out.println("Log In Succesful");
                         System.out.println();
-                        menu();
+                        menu(p.fullName);
                         break;
                     } else if (
-                        !loginUser.equals(uName) || !loginPass.equals(pass)
+                        !loginUser.equals(p.userName) ||
+                        !loginPass.equals(p.passW)
                     ) {
                         attempts--;
                         System.out.println(
@@ -183,7 +188,7 @@ public class travelLog {
         }
     }
 
-    static void menu() {
+    static void menu(String name) {
         String userInput;
         do {
             System.out.println(
@@ -195,7 +200,7 @@ public class travelLog {
             System.out.println(
                 "==================================================\n"
             );
-            System.out.println("Welcome, <" + fName + ">!\n");
+            System.out.println("Welcome, <" + name + ">!\n");
             System.out.println(
                 "[1] Add Travel Log\n" +
                     "[2] Add Trip Plan\n" +
@@ -248,13 +253,17 @@ public class travelLog {
             System.out.print("Enter Destination Name: ");
             destiName = s.nextLine();
             System.out.println();
-            isDuplicate(destiName, logCount, log);
-            if (
-                isinValidLength(destiName, 3, 50)
-            )System.out.println("Invalid Input, Please Try Again. Follow The Instructions Below\n");
+            if (isDuplicate(destiName, logCount, log)) System.out.println(
+                "Destination Name Or Trip Name \"" +
+                    destiName +
+                    "\" Is Already Stored, Please Use Another Name."
+            );
+            if (isinValidLength(destiName, 3, 50)) System.out.println(
+                "Invalid Input, Please Try Again. Follow The Instructions Below\n"
+            );
         } while (
-            isinValidLength(destiName, 3, 50)||
-                isDuplicate(destiName, logCount, log)
+            isinValidLength(destiName, 3, 50) ||
+            isDuplicate(destiName, logCount, log)
         );
 
         do {
@@ -279,7 +288,7 @@ public class travelLog {
             numOfVisits = s.nextLine();
             System.out.println();
             if (
-                numOfVisits.length() < 1 || numOfVisits.matches(".*[1-9].*")
+                numOfVisits.length() < 1 || !numOfVisits.matches(".*[1-9].*")
             ) System.out.println(
                 "Invalid Input, Please Try Again. Follow The Instructions Below\n"
             );
@@ -295,13 +304,13 @@ public class travelLog {
             firstDateVisited = s.nextLine();
             System.out.println();
             if (
-                isinValidLength(firstDateVisited, 10, 10)||
+                isinValidLength(firstDateVisited, 10, 10) ||
                 !firstDateVisited.matches("\\d{2}/\\d{2}/\\d{4}")
             ) System.out.println(
                 "Invalid Input, Please Try Again. Follow The Instructions Below\n"
             );
         } while (
-            isinValidLength(firstDateVisited, 10, 10)||
+            isinValidLength(firstDateVisited, 10, 10) ||
             !firstDateVisited.matches("\\d{2}/\\d{2}/\\d{4}")
         );
         do {
@@ -312,11 +321,11 @@ public class travelLog {
             location = s.nextLine();
             System.out.println();
             if (
-                isinValidLength(location, 0, 30)|| location.isBlank()
+                isinValidLength(location, 0, 30) || location.isBlank()
             ) System.out.println(
                 "Invalid Input, Please Try Again. Follow The Instructions Below\n"
             );
-        } while (isinValidLength(location, 0, 30)|| location.isBlank());
+        } while (isinValidLength(location, 0, 30) || location.isBlank());
 
         do {
             System.out.println(
@@ -325,11 +334,11 @@ public class travelLog {
             travelexp = s.nextLine();
             System.out.println();
             if (
-                isinValidLength(travelexp, 0, 300)|| travelexp.isBlank()
+                isinValidLength(travelexp, 0, 300) || travelexp.isBlank()
             ) System.out.println(
                 "Invalid Input, Please Try Again. Follow The Instructions Below\n"
             );
-        } while (isinValidLength(travelexp, 0, 300)|| travelexp.isBlank());
+        } while (isinValidLength(travelexp, 0, 300) || travelexp.isBlank());
         log[logCount] = new TravelLogObject(
             destiName,
             destiType,
@@ -339,24 +348,25 @@ public class travelLog {
             travelexp
         );
         logCount++;
-        menu();
+        menu(p.fullName);
     }
 
     static boolean isinValidLength(String text, int min, int max) {
         return text.length() < min || text.length() > max;
     }
-    static boolean isDuplicate(String currentName, int count, TravelLogObject[] array){
+
+    static boolean isDuplicate(
+        String currentName,
+        int count,
+        TravelLogObject[] array
+    ) {
         boolean duplicate = false;
-        for(int i = 0; i < count; i++){
-            if(currentName.equals(array[i].destinationName)){
-                System.out.println(
-                    "Destination Name Or Trip Name \"" +
-                        currentName +
-                        "\" Is Already Stored, Please Use Another Name."
-                );
+        for (int i = 0; i < count; i++) {
+            if (currentName.equals(array[i].destinationName)) {
                 duplicate = true;
+                break;
             }
         }
-         return duplicate;
+        return duplicate;
     }
 }
