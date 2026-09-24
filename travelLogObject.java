@@ -1,11 +1,12 @@
 class TravelLogObject {
 
-    String destinationName, destinationType, dateVisited, location, travelExp, visits;
+    String destinationName, destinationType, dateVisited, location, travelExp;
+    int visits;
 
     TravelLogObject(
         String destinationName,
         String destinationType,
-        String visits,
+        int visits,
         String dateVisited,
         String location,
         String travelExp

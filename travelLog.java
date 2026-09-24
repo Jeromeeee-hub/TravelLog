@@ -4,6 +4,7 @@ public class travelLog {
 
     static Scanner s = new Scanner(System.in);
     static TravelLogObject[] log = new TravelLogObject[50];
+    static tripPlan[] trip = new tripPlan[20];
     static User p;
     static int logCount = 0;
 
@@ -224,13 +225,16 @@ public class travelLog {
                 "Invalid Input, Please Choose Among The Choices Only."
             );
             else menuFunction(userInput);
-        } while (!userInput.matches("^(?:[1-9]|1[0-5])$"));
+        } while (userInput.matches("^(?:[1-9]|1[0-5])$"));
     }
 
     static void menuFunction(String x) {
         switch (x) {
             case "1":
                 addTravelLog();
+                break;
+            case "2":
+                tripPlan();
                 break;
             default:
                 break;
@@ -240,7 +244,7 @@ public class travelLog {
     static void addTravelLog() {
         String destiName;
         String destiType;
-        String numOfVisits;
+        int numOfVisits;
         String firstDateVisited;
         String location;
         String travelexp;
@@ -258,10 +262,13 @@ public class travelLog {
                     destiName +
                     "\" Is Already Stored, Please Use Another Name."
             );
-            if (isinValidLength(destiName, 3, 50)) System.out.println(
+            if (
+                isinValidLength(destiName, 3, 50) || destiName.isBlank()
+            ) System.out.println(
                 "Invalid Input, Please Try Again. Follow The Instructions Below\n"
             );
         } while (
+            destiName.isBlank() ||
             isinValidLength(destiName, 3, 50) ||
             isDuplicate(destiName, logCount, log)
         );
@@ -285,14 +292,12 @@ public class travelLog {
             System.out.print(
                 "Enter Number Of Visits in " + destiName + " Trip: "
             );
-            numOfVisits = s.nextLine();
+            numOfVisits = s.nextInt();
             System.out.println();
-            if (
-                numOfVisits.length() < 1 || !numOfVisits.matches(".*[1-9].*")
-            ) System.out.println(
+            if (!isPositive(numOfVisits)) System.out.println(
                 "Invalid Input, Please Try Again. Follow The Instructions Below\n"
             );
-        } while (numOfVisits.length() < 1 || !numOfVisits.matches(".*[1-9].*"));
+        } while (!isPositive(numOfVisits));
 
         do {
             System.out.println(
@@ -348,14 +353,107 @@ public class travelLog {
             travelexp
         );
         logCount++;
-        menu(p.fullName);
+    }
+
+    static void tripPlan() {
+        String tripName;
+        String tripDescription;
+        int tripPrepTime;
+        int tripTravelTime;
+        int tripNumActivities;
+        String tripListActivities;
+        int tripNumInstructions;
+        String tripInstructions;
+        System.out.println("Trip Plan Menu");
+        do {
+            System.out.println(
+                "Trip Name Must Contain 3-50 Characters, And Must Be Unique, No Duplicates Allowed\nExample: Pahinga Sa Japan"
+            );
+            System.out.print("Enter Trip Name: ");
+            tripName = s.nextLine();
+            System.out.println();
+            if (
+                tripName.isBlank() || isinValidLength(tripName, 3, 50)
+            ) System.out.println(
+                "Invalid Input, Please Try Again. Follow The Instructions Below\n"
+            );
+        } while (tripName.isBlank() || isinValidLength(tripName, 3, 50));
+
+        do {
+            System.out.println(
+                "Trip Description Describe The Purpose Or Overall Plan For The Trip. Must Not Be Empty And Must Not Exceed 160 Characters"
+            );
+            System.out.print("Enter Trip Description: ");
+            tripDescription = s.nextLine();
+            System.out.println();
+            if (
+                tripDescription.isBlank() ||
+                isinValidLength(tripDescription, 1, 160)
+            ) System.out.println(
+                "Invalid Input, Please Try Again. Follow The Instructions Below\n"
+            );
+        } while (
+            tripDescription.isBlank() ||
+            isinValidLength(tripDescription, 1, 160)
+        );
+
+        do{
+            System.out.println("Preperation Time, Represents The Estimated Preperation Time. Must Not Be Less Than 1");
+            System.out.print("Enter Preperation Time (In Minutes): ");
+            tripPrepTime = s.nextInt();
+            System.out.println();
+            if(!isPositive(tripPrepTime)) System.out.println(
+                "Invalid Input, Please Try Again. Follow The Instructions Below\n"
+            );
+        }while(!isPositive(tripPrepTime));
+
+        do{
+            System.out.println("Travel Time, Represents The Estimated Travel Time, Must Not Be Less Than 1");
+            System.out.print("Enter Travel Time (In Minutes): ");
+            tripTravelTime = s.nextInt();
+            System.out.println();
+            if(!isPositive(tripTravelTime)) System.out.println(
+                "Invalid Input, Please Try Again. Follow The Instructions Below\n"
+            );
+
+        }while(!isPositive(tripTravelTime));
+
+        do{
+            System.out.println("Number Of Activities You Will Do In Your Trip, Must Not Be More Than 20");
+            System.out.print("Enter Number Of Activities: ");
+            tripNumActivities = s.nextInt();
+            s.nextLine();
+            System.out.println();
+            if(!isPositive(tripNumActivities) || tripNumActivities > 20) System.out.println(
+                "Invalid Input, Please Try Again. Follow The Instructions Below\n"
+            );
+        }while(!isPositive(tripNumActivities) || tripNumActivities > 20);
     }
 
     static boolean isinValidLength(String text, int min, int max) {
         return text.length() < min || text.length() > max;
     }
 
+    static boolean isPositive(int x){
+        return x > 1;
+    }
+
     static boolean isDuplicate(
+        String currentName,
+        int count,
+        TravelLogObject[] array
+    ) {
+        boolean duplicate = false;
+        for (int i = 0; i < count; i++) {
+            if (currentName.equals(array[i].destinationName)) {
+                duplicate = true;
+                break;
+            }
+        }
+        return duplicate;
+    }
+
+    static boolean IsDuplicate(
         String currentName,
         int count,
         TravelLogObject[] array
