@@ -1,6 +1,6 @@
 class tripPlan {
 
-    String planName, planDescription, planListActivities, planInstructions;
+    String planName, planDescription, tripListActivities[], planInstructions[];
     int planPrepTime, planTravelTime, planActivities, planNumInstructions;
 
     tripPlan(
@@ -9,9 +9,9 @@ class tripPlan {
         int planPrepTime,
         int planTravelTime,
         int planActivities,
-        String planListActivities,
+        String tripListActivities[],
         int planNumInstructions,
-        String planInstructions
+        String planInstructions[]
 
     ) {
         this.planName = planName;
@@ -19,7 +19,7 @@ class tripPlan {
         this.planPrepTime = planPrepTime;
         this.planTravelTime = planTravelTime;
         this.planActivities = planActivities;
-        this.planListActivities = planListActivities;
+        this.tripListActivities = tripListActivities;
         this.planNumInstructions = planNumInstructions;
         this.planInstructions = planInstructions;
     }
